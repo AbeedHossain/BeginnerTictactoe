@@ -4,13 +4,13 @@ using namespace std;
 class tictactoe{
     private:
     vector<char> positions;
-    int input_count{1};
+    int input_count;
     char turn;
-    bool taken{false};
-    bool is_finished{false};
+    bool taken;
+    bool is_finished;
     public:
 
-    tictactoe():positions(9,'N'){
+    tictactoe() : positions(9, 'N'), input_count(1), taken(false), is_finished(false) {
         logic_check();
     }
     void post_renderer(){
@@ -63,40 +63,24 @@ class tictactoe{
             
         }
 
-   bool horizontal_checker(){
-        
-        int i{0},j{1},k{2};
-        while(k<9){
-            vector<int> ijk;
-            ijk.push_back(i);ijk.push_back(j);ijk.push_back(k);
-            if(checker(ijk)) return 1;
-            i+=3;j+=3;k+=3;
+   bool horizontal_checker() {
+        for (int i = 0; i < 9; i += 3) {
+            if (checker({i, i+1, i+2})) return true;
         }
         return false;
     }
     
-    bool vertical_checker(){
-        
-        int i{0},j{3},k{6};
-        while(k<9){
-            vector<int> ijk;
-            ijk.push_back(i);ijk.push_back(j);ijk.push_back(k);
-            if(checker(ijk)) return 1;
-            i=+3;j+=3;k+=3;
+    bool vertical_checker() {
+        for (int i = 0; i < 3; i++) {
+            if (checker({i, i+3, i+6})) return true;
         }
         return false;
     }
-    bool diagonal_checker(){
-        
-        int i{0},j{4},k{8},c{0};
-        while(c<2){
-            vector<int> ijk;
-            ijk.push_back(i);ijk.push_back(j);ijk.push_back(k);
-            if(checker(ijk)) return 1;
-            i=2,j=4,k=6;c++;
-        }
-        return false;
+
+    bool diagonal_checker() {
+        return checker({0, 4, 8}) || checker({2, 4, 6});
     }
+
     vector<int> location_converter(int a){
         return {a%3,a/3};
     }
@@ -127,10 +111,16 @@ class tictactoe{
         }
         
         int temp;
-        cin>>temp;
+        bool valid_input = false;
+        while (!valid_input) {
+            cin >> temp;
+            if (temp >= 0 && temp < 9) {
+                valid_input = true;
+            } else {
+                cout << "Invalid input. Please enter a number between 0 and 8: ";
+            }
+        }
            
-  
-        
         vector<int> location=location_converter(temp);
         store(location,turn);
         post_renderer();
@@ -141,8 +131,8 @@ class tictactoe{
             cout<<"draw!"<<endl;
             break;
         }
-        if(taken) input_count=input_count;
-        else{input_count++;}
+        if(!taken) input_count++;
+        
     }
     
     }
@@ -152,5 +142,5 @@ class tictactoe{
 
 int main(){
     tictactoe mygame;
-    
+    return 0;
 }
